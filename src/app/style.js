@@ -92,7 +92,7 @@ export const FormContainer = styled.form`
     border-radius: 4px;
   }
 
-  span {
+  h5 {
     margin: 20px 0;
     font-size: 0.9em;
     color: #333;
@@ -220,6 +220,7 @@ export const FooterContainer = styled.footer`
 
 export const Img = styled(Image)`
   margin: 20px auto;
+  width: auto;
   height: auto;
 
   @media (max-width: 960px) {

@@ -3,6 +3,7 @@
 require('dotenv').config();
 
 import { useForm } from 'react-hook-form';
+import emailjs from 'emailjs-com';
 import { Input } from '@/components/Input';
 import _ from 'lodash';
 import * as yup from 'yup';
@@ -31,6 +32,7 @@ const schema = yup.object({
   rgBody: yup.string().required(),
   cpf: yup.number().required(),
   job: yup.string().required(),
+  jobLocationName: yup.string().required(),
   fatherName: yup.string().required(),
   motherName: yup.string().required(),
   homeAdress: yup.string().required(),
@@ -64,25 +66,39 @@ export default function Home() {
   });
 
   const handleDataSubmit = async (formData) => {
-    // try {
-    //   await emailjs.send(
-    //     process.env.NEXT_PUBLIC_SERVICE_ID,
-    //     process.env.NEXT_PUBLIC_TEMPLATE_ID,
-    //     formData,
-    //     process.env.NEXT_PUBLIC_USER_ID
-    //   );
-    //   toast.success('Enviado com Sucesso');
-    // } catch (error) {
-    //   toast.error('Falha ao Enviar');
-    // }
-    console.log('clicou');
+    try {
+      await emailjs.send(
+        process.env.NEXT_PUBLIC_SERVICE_ID,
+        process.env.NEXT_PUBLIC_TEMPLATE_ID,
+        formData,
+        process.env.NEXT_PUBLIC_USER_ID
+      );
+      handleCongrats();
+      toast.success('Enviado com Sucesso');
+    } catch (error) {
+      console.log(error);
+      toast.error('Falha ao Enviar');
+    }
     reset();
+  };
+
+  const handleCongrats = () => {
+    const timeout = setTimeout(() => {
+      window.location.href = 'https://black-skulls.vercel.app';
+    }, 3000);
+
+    return () => clearTimeout(timeout);
   };
 
   return (
     <Container>
       <HeaderContainer>
-        <Img src="/images/logoCinza.png" width={800} height={300}></Img>
+        <Img
+          src="/images/logoCinza.png"
+          priority={true}
+          width={800}
+          height={300}
+        ></Img>
       </HeaderContainer>
       <Section>
         <h2>Sobre Nós</h2>
@@ -156,8 +172,8 @@ export default function Home() {
               />
               <Input
                 label="Local de Trabalho"
-                error={errors?.fullName?.message}
-                {...register('fullName')}
+                error={errors?.jobLocationName?.message}
+                {...register('jobLocationName')}
               />
             </FormLine>
             <Input
@@ -281,11 +297,11 @@ export default function Home() {
               />
             </FormLine>
           </FormSection>
-          <span>
+          <h5>
             Ao enviar este formulário, você confirma que todas as informações
             fornecidas são verdadeiras e você assume total responsabilidade pela
             veracidade dos dados.
-          </span>
+          </h5>
           <ButtonContainer>
             <SubmitButton type="submit">Enviar</SubmitButton>
           </ButtonContainer>
